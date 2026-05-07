@@ -111,7 +111,10 @@ def _levels_clause(
     "Warning") still match the canonical aliases supplied by the API.
     """
     field = _field_token(level_field)
-    pattern = '|'.join(re.escape(lv) for lv in levels)
+    # ``re.escape`` does not escape ``/`` (Py3.7+), but the surrounding
+    # Insights regex literal is delimited by ``/`` -- a level alias
+    # containing a slash would otherwise terminate the literal early.
+    pattern = '|'.join(re.escape(lv).replace('/', '\\/') for lv in levels)
     return f'filter {field} like /(?i)^({pattern})$/'
 
 
