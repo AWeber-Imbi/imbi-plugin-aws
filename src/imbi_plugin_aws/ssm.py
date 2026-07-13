@@ -227,7 +227,7 @@ class SSMConfiguration(ConfigurationCapability):
         if '..' in key or key.startswith('/'):
             raise ValueError(
                 f'Invalid SSM key {key!r}: keys must be relative '
-                "to the assignment's path_prefix"
+                'to the configured path_prefix'
             )
         creds = resolve_credentials(
             credentials, region=integration_region(ctx), ctx=ctx
@@ -313,7 +313,10 @@ class SSMConfiguration(ConfigurationCapability):
     def _prefix(ctx: PluginContext) -> str:
         raw = ctx.capability_options.get('path_prefix')
         if not isinstance(raw, str) or not raw:
-            raise ValueError('aws-ssm requires the "path_prefix" option')
+            raise ValueError(
+                'The aws configuration capability requires the '
+                '"path_prefix" option'
+            )
         expanded = expand_template(raw, template_vars(ctx))
         if not expanded.startswith('/') or expanded == '/':
             raise ValueError(
