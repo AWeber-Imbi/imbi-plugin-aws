@@ -46,6 +46,7 @@ class AWSPlugin(plugins.Plugin):
     manifest = plugins.PluginManifest(
         slug='aws',
         name='AWS',
+        icon='tabler-brand-aws',
         description=(
             'Amazon Web Services integration: IAM Identity Center '
             'federation, CloudWatch Logs, and SSM Parameter Store.'
