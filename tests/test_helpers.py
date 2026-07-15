@@ -79,6 +79,10 @@ class ProjectTypePathMapTestCase(unittest.TestCase):
         ctx = _ctx(['apis'], {'project_type_path_map': {'apis': ''}})
         self.assertEqual(template_vars(ctx)['project_type_slug'], 'apis')
 
+    def test_whitespace_mapping_value_falls_back_to_slug(self) -> None:
+        ctx = _ctx(['apis'], {'project_type_path_map': {'apis': '   '}})
+        self.assertEqual(template_vars(ctx)['project_type_slug'], 'apis')
+
     def test_non_dict_map_option_ignored(self) -> None:
         ctx = _ctx(['apis'], {'project_type_path_map': 'nonsense'})
         self.assertEqual(template_vars(ctx)['project_type_slug'], 'apis')

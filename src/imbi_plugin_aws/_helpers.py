@@ -37,7 +37,7 @@ def _project_type_segment(ctx: PluginContext) -> str | None:
     overrides = ctx.integration_options.get(PROJECT_TYPE_PATH_MAP)
     if isinstance(overrides, dict):
         mapped = typing.cast('dict[str, object]', overrides).get(slug)
-        if isinstance(mapped, str) and mapped:
+        if isinstance(mapped, str) and mapped.strip():
             return mapped
     return slug
 
