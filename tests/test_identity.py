@@ -9,6 +9,7 @@ from imbi_common.plugins.base import (
     IdentityCredentials,
     PluginContext,
 )
+from imbi_common.plugins.errors import PluginCredentialsMissing
 
 from imbi_plugin_aws.errors import (
     IamIcAuthorizationPending,
@@ -312,7 +313,7 @@ class MaterializeTestCase(unittest.IsolatedAsyncioTestCase):
             access_token='iam-ic-token',
             extra={'aws_account_id': '111111111111'},
         )
-        with self.assertRaises(ValueError):
+        with self.assertRaises(PluginCredentialsMissing):
             await plugin.materialize(_ctx(), {}, connection)
 
     @respx.mock
