@@ -317,6 +317,28 @@ class MaterializeTestCase(unittest.IsolatedAsyncioTestCase):
             await plugin.materialize(_ctx(), {}, connection)
 
     @respx.mock
+    async def test_empty_role_template_raises_before_request(self) -> None:
+        # ``${team_slug}`` expands to '' when team_slug is unset, which
+        # must raise PluginCredentialsMissing before any
+        # GetRoleCredentials request is issued.
+        route = respx.get(
+            'https://portal.sso.us-east-1.amazonaws.com/federation/credentials'
+        ).mock(return_value=httpx.Response(200))
+        plugin = AWSIdentity()
+        connection = IdentityCredentials(
+            access_token='iam-ic-token',
+            extra={'aws_account_id': '111111111111'},
+        )
+        with self.assertRaises(PluginCredentialsMissing):
+            await plugin.materialize(
+                _ctx(),
+                {},
+                connection,
+                identity_options={'default_role_name': '${team_slug}'},
+            )
+        self.assertFalse(route.called)
+
+    @respx.mock
     async def test_resolves_account_via_environment_maps_to(self) -> None:
         captured: list[dict[str, str]] = []
 
